@@ -1,0 +1,88 @@
+
+{
+  "vnexpress.net": {
+    "url": "https://vnexpress.net/",
+    "listCommentClassName": "main_show_comment",
+    "listCommentCssSelector": "#list_comment",
+    "commentItemClassName": "comment_item",
+    "subCommentCssSelector": "div.sub_comment",
+    "subCommentItemClassName": "sub_comment_item",
+    "reactionCssSelector": ".reactions-total a",
+    "reactionClassName": "reactions-total",
+    "viewMoreCssSelector": "#box_comment_vne > div > div.view_more_coment.width_common.mb10 > a",
+    "replyCommentClassName": "view_all_reply"
+  },
+  "dantri.com.vn": {
+    "url": "https://dantri.com.vn/",
+    "emptyCommentClassName": "comment-empty",
+    "listCommentCssSelector": "#comment > div > div.comment-container > ul",
+    "commentItemClassName": "comment-item",
+    "subCommentCssSelector": "div.comment-list child",
+    "subCommentItemClassName": "sub_comment_item",
+    "reactionCssSelector": ".like",
+    "viewMoreCssSelector": "#box_comment_vne > div > div.view_more_coment.width_common.mb10 > a",
+    "replyCommentClassName": "comment-reply"
+  },
+  "thanhnien.vn": {
+    "url": "https://thanhnien.vn/",
+    "listCommentClassName": "main_show_comment",
+    "listCommentCssSelector": "#detail_comment > div > div.cmbl > div.list-comment.content_cm",
+    "commentItemClassName": "item",
+    "subCommentCssSelector": "div.sub_comment",
+    "subCommentItemClassName": "sub_comment_item",
+    "reactionCssSelector": ".reactions-total a",
+    "reactionClassName": "total-like",
+    "viewMoreCssSelector": "#ViewMoreComment",
+    "replyCommentClassName": "view_all_reply"
+  },
+  "cand.com.vn": {
+    "url": "https://cand.com.vn/",
+    "listCommentClassName": "uk-comment-list",
+    "listCommentCssSelector": "div.box-cmt > div.box-comment-list",
+    "commentItemClassName": "item",
+    "commentItemTagName": "li",
+    "subCommentCssSelector": "div.sub_comment",
+    "subCommentItemClassName": "sub_comment_item",
+    "reactionCssSelector": ".reactions-total a",
+    "reactionClassName": "btn-like",
+    "viewMoreCssSelector": "#ViewMoreComment",
+    "replyCommentClassName": "view_all_reply"
+  },
+  "hanoimoi.vn": {
+    "url": "https://hanoimoi.vn/",
+    "listCommentClassName": "c-comment-list",
+    "listCommentCssSelector": "body > div:nth-child(4) > div > div > div > div.l-main > div.c-news-detail > div.c-comments > div.c-comment-list.onecms__comment__list",
+    "commentItemClassName": "item",
+    "subCommentCssSelector": "div.sub_comment",
+    "subCommentItemClassName": "sub_comment_item",
+    "reactionCssSelector": ".reactions-total a",
+    "reactionClassName": "total-like",
+    "viewMoreCssSelector": "#ViewMoreComment",
+    "replyCommentClassName": "view_all_reply"
+  },
+  "vtv.vn": {
+    "url": "https://vtv.vn/",
+    "listCommentClassName": "comment_list",
+    "listCommentCssSelector": "body > div:nth-child(4) > div > div > div > div.l-main > div.c-news-detail > div.c-comments > div.c-comment-list.onecms__comment__list",
+    "commentItemClassName": "item",
+    "subCommentCssSelector": "div.sub_comment",
+    "subCommentItemClassName": "sub_comment_item",
+    "reactionCssSelector": ".reactions-total a",
+    "reactionClassName": "total-like",
+    "viewMoreCssSelector": "#ViewMoreComment",
+    "replyCommentClassName": "view_all_reply"
+  },
+  "vietnamnet.vn": {
+    "url": "https://vietnamnet.vn/",
+    "iframeCssSelector": "#comment > div > div > iframe",
+    "listCommentClassName": "",
+    "listCommentCssSelector": "#react-tabs-1 > ul",
+    "commentItemClassName": "#react-tabs-1 > ul > div",
+    "subCommentTagName": "li",
+    "reactionCssSelector": "span.group-hover\\:text-\\[\\#666\\]",
+    "viewMoreCssSelector": "#root > div > div > button",
+    "viewReplyCssSelector": "li.pb-\\[5px\\]"
+  },
+
+  "created by": "ToanDN"
+}
