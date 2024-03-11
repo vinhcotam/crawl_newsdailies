@@ -40,14 +40,15 @@ class CrawlingCand(CrawlingNews):
         else:
             liTags = list_comment_element.find_elements(By.TAG_NAME, commentItemTagName)
             for liTag in liTags:
+                reaction_dict = {}
                 commentText = liTag.find_element(By.TAG_NAME, 'p').text
                 reaction = liTag.find_element(By.CLASS_NAME, reactionClassName).get_attribute('data-like')
                 print(commentText + '---' + reaction)
                 # save to database
-                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction, news_url = url, date_collected = datetime.now())
+                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, date_collected = datetime.now())
 
                 commentData.save()
-                print(commentData.to_json())
+                # print(commentData.to_json())
 
 
 

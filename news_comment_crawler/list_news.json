@@ -9,16 +9,17 @@
     "subCommentItemClassName": "sub_comment_item",
     "reactionCssSelector": ".reactions-total a",
     "reactionClassName": "reactions-total",
+    "reactionDetail": "reactions-detail > div.item", 
     "viewMoreCssSelector": "#box_comment_vne > div > div.view_more_coment.width_common.mb10 > a",
     "replyCommentClassName": "view_all_reply"
   },
   "dantri.com.vn": {
     "url": "https://dantri.com.vn/",
     "emptyCommentClassName": "comment-empty",
-    "listCommentCssSelector": "#comment > div > div.comment-container > ul",
-    "commentItemClassName": "comment-item",
-    "subCommentCssSelector": "div.comment-list child",
-    "subCommentItemClassName": "sub_comment_item",
+    "listCommentCssSelector": "#comment > div > div.comment-container > ul.comment-list",
+    "commentItemClassName": "div.comment-item",
+    "subCommentCssSelector": "ul.comment-list.child",
+    "subCommentItemClassName": "comment-list.child",
     "reactionCssSelector": ".like",
     "viewMoreCssSelector": "#box_comment_vne > div > div.view_more_coment.width_common.mb10 > a",
     "replyCommentClassName": "comment-reply"
@@ -32,7 +33,7 @@
     "subCommentItemClassName": "sub_comment_item",
     "reactionCssSelector": ".reactions-total a",
     "reactionClassName": "total-like",
-    "viewMoreCssSelector": "#ViewMoreComment",
+    "viewMoreCssSelector": "div.cmbl > a",
     "replyCommentClassName": "view_all_reply"
   },
   "cand.com.vn": {
@@ -78,10 +79,11 @@
     "listCommentClassName": "",
     "listCommentCssSelector": "#react-tabs-1 > ul",
     "commentItemClassName": "#react-tabs-1 > ul > div",
-    "subCommentTagName": "li",
+    "subCommentTagName": "pl-\\[\\50px\\] > li > div.user__item > div.author__dataBinding > content__wrapper",
+    "subCommentReaction": "pl-\\[\\50px\\] > li > div.user__item > div.author__dataBinding > content__wrapper > div.__actions\\:text-\\[\\#999\\] ",
     "reactionCssSelector": "span.group-hover\\:text-\\[\\#666\\]",
     "viewMoreCssSelector": "#root > div > div > button",
-    "viewReplyCssSelector": "li.pb-\\[5px\\]"
+    "viewReplyCssSelector": "ul.pl-\\[\\50px\\] > li > span.hover:underline.my-auto.cursor-pointer"
   },
 
   "created by": "ToanDN"

@@ -30,6 +30,7 @@ class CrawlingVnexpress(CrawlingNews):
         replyCommentClassName = element["replyCommentClassName"]
         subCommentCssSelector = element["subCommentCssSelector"]
         subCommentItemClassName = element["subCommentItemClassName"]
+        reactionDetail = element["reactionDetail"]
         ##-------------------------------------------------
 
         self.driver.get(url)
@@ -50,36 +51,71 @@ class CrawlingVnexpress(CrawlingNews):
             pass
 
         comments = list_comment_element.find_elements(By.CLASS_NAME, commentItemClassName)
-        print(len(comments))
+        # print(len(comments))
         #loop in comments get content (text, react) of each comment
         i = 0
         for comment in comments:
             i = i + 1
+            reaction_dict = {}
             reaction = comment.find_element(By.CSS_SELECTOR, reactionCssSelector).text
+            reactionDetail = ".reactions-detail"
+            reaction_items = comment.find_elements(By.CSS_SELECTOR, reactionDetail)
 
-                #save to database
-            print(str(i) + self.getContent(comment) + reaction)
-
-            commentData = NewsComment(_id = ObjectId(), content = self.getContent(comment), reaction = reaction, news_url = url, date_collected = datetime.now())
+            for reaction_detail in reaction_items:
+                img_elements = reaction_detail.find_elements(By.TAG_NAME, "img")
+                strong_elements = reaction_detail.find_elements(By.TAG_NAME, "strong")
+                for img, strong in zip(img_elements, strong_elements):
+                    emotions = img.get_attribute("alt")
+                    quantity = strong.get_attribute("innerHTML")
+                    reaction_dict[emotions] = quantity
+                # save to database
+            # print(str(i) + self.getContent(comment) + reaction)
+            if not NewsComment.checkCommentExist(self.getContent(comment)):
+                commentData = NewsComment(_id = ObjectId(), content=self.getContent(comment), reaction=reaction_dict, news_url=url, date_collected=datetime.now())
+                commentData.save()
+                object_cmt_id = str(commentData._id)
+            else:
+                print("not save")
+            # get object id
             try:
-
+                sub_reaction_dict = {}
                 showSubComment = comment.find_element(By.CLASS_NAME, replyCommentClassName)
                 showSubComment.click()
                 self.driver.implicitly_wait(3) # seconds
 
                 subCommentElement = comment.find_element(By.CSS_SELECTOR, subCommentCssSelector)
                 subComments = subCommentElement.find_elements(By.CLASS_NAME, subCommentItemClassName)
-                #loop in comments get content (text, react) of each subcomment
+                # loop in comments get content (text, react) of each subcomment
+                # print("--------")
                 for subComment in subComments:
+                    # text = subComment.get_attribute("innerHTML")
+                    # print("text: ", text)
                     subReaction = subComment.find_element(By.CSS_SELECTOR, reactionCssSelector).text
-                    #save to database
-                    print('---' + self.getContent(subComment) + subReaction)
-                    commentData.subcomments.append(SubComment(id=ObjectId(), content=self.getContent(subComment), reaction=subReaction))
+                    img_elements = reaction_detail.find_elements(By.TAG_NAME, "img")
+                    strong_elements = reaction_detail.find_elements(By.TAG_NAME, "strong")
+                    for img, strong in zip(img_elements, strong_elements):
+                        sub_emotions = img.get_attribute("alt")
+                        sub_quantity = strong.get_attribute("innerHTML")
+                        # print("----", sub_emotions)
+                        # print("----", sub_quantity)
+                        sub_reaction_dict[sub_emotions] = sub_quantity
+                        # print(object_cmt_id)
+                        if object_cmt_id is not None:
+                            if not SubComment.checkSubCommentExist(object_cmt_id, self.getContent(comment)):
+                                subCommentData = SubComment(_id = ObjectId(),comment_id=object_cmt_id, content=self.getContent(subComment), reaction=sub_reaction_dict)
+                                subCommentData.save()
+                                print("check check")
+                                print(self.getContent(subComment))
+                        else:
+                            print("not save")
+
+                        # reaction_dict[emotions] = quantity
+                    # save to database
+                    # print('---' + self.getContent(subComment) + subReaction)
 
             except:
                 pass
-            commentData.save()
-            print(commentData.to_json())
+            # print(commentData.to_json())
         time.sleep(3)
 
     def getContent(self, elements):

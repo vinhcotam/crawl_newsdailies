@@ -41,12 +41,13 @@ class CrawlingHanoimoi(CrawlingNews):
             '''Xử lý lấy comment'''
             comments = list_comment_element.find_elements(By.CLASS_NAME, commentItemClassName)
             for comment in comments:
+                reaction_dict = {}
                 commentText = comment.find_element(By.CLASS_NAME, 'text-comment').text
                 reaction = comment.find_element(By.CLASS_NAME, 'total-like').text
                 print(commentText + '---' + reaction)
-                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction, news_url = url, date_collected = datetime.now())
+                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, date_collected = datetime.now())
                 commentData.save()
-                print(commentData.to_json())
+                # print(commentData.to_json())
         time.sleep(3)
 
  

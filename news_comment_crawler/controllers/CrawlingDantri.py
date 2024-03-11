@@ -48,28 +48,36 @@ class CrawlingDantri(CrawlingNews):
             # lấy ra các comment chính - và comment phụ
             for comment in comments:
                 i = i + 1
+                reaction_dict = {}
                 commentText = comment.find_element(By.CLASS_NAME, "comment-text").text
                 reaction = comment.find_element(By.CSS_SELECTOR, reactionCssSelector).text
                 
                 # save to database
-                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction, news_url = url, date_collected = datetime.now())
+                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, date_collected = datetime.now())
+                print(commentText)
                 #sub comment
-                try:
-                   showSubComment = comment.find_element(By.CLASS_NAME, 'view_all_reply')
-                   showSubComment.click()
-                   time.sleep(3)
-
-                   subCommentElement = comment.find_element(By.CSS_SELECTOR, 'div.sub_comment')
-                   subComments = subCommentElement.find_elements(By.CLASS_NAME, 'sub_comment_item')
-                   print(subComments)
-                #    for subComment in subComments:
-                #        #luu vao database
-                #        commentData.subcomments.append(sub_comment(id=ObjectId(), content=self.getContent(subComment), reaction=self.getReaction(subComment)))
+                # try:
+                #     showSubComment = self.driver.find_element(By.CLASS_NAME, replyCommentClassName)
+                #     showSubComment.click()
+                #     time.sleep(3)
+                #     subCommentElement = comment.find_elements(By.CSS_SELECTOR, subCommentCssSelector)
+                #     subComments = subCommentElement.find_elements(By.CLASS_NAME, subCommentItemClassName)
+                #     print(subComments)
+                #     print("éc")
                     
+                # except:
+                #    pass
+                try:
+                    showSubComment = self.driver.find_element(By.CLASS_NAME, replyCommentClassName)
+                    showSubComment.click()
+                    time.sleep(3)
+                    subCommentElements = comment.find_elements(By.CSS_SELECTOR, subCommentCssSelector)
+                    for subCommentElement in subCommentElements:
+                        subCommentText = subCommentElement.find_element(By.CLASS_NAME, "comment-text").text
+                        print(subCommentText)
                 except:
-                   pass
+                    pass
                 commentData.save()
-                print(commentData.to_json())
 
             time.sleep(3)
 
