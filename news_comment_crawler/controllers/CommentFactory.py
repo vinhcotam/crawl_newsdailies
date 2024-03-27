@@ -5,7 +5,7 @@ from .CrawlingCand import CrawlingCand
 from .CrawlingHanoimoi import CrawlingHanoimoi
 from .CrawlingThanhnien import CrawlingThanhnien
 from .CrawlingVtv import CrawlingVtv
-
+from .CrawlingTuoitre import CrawlingTuoiTre
 class CommentFactory():
 
     '''Define news's domain'''
@@ -31,6 +31,8 @@ class CommentFactory():
 
         if domain == "vietnamnet.vn":
             return CrawlingVietnamnet(domain, driver)
+        if domain == "tuoitre.vn":
+            return CrawlingTuoiTre(domain, driver)
 
 
 

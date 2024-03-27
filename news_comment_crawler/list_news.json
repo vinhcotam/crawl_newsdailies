@@ -17,9 +17,9 @@
     "url": "https://dantri.com.vn/",
     "emptyCommentClassName": "comment-empty",
     "listCommentCssSelector": "#comment > div > div.comment-container > ul.comment-list",
-    "commentItemClassName": "div.comment-item",
-    "subCommentCssSelector": "ul.comment-list.child",
-    "subCommentItemClassName": "comment-list.child",
+    "commentItemClassName": "comment-item",
+    "subCommentCssSelector": "comment-list.child",
+    "subCommentItemClassName": "li > comment-item",
     "reactionCssSelector": ".like",
     "viewMoreCssSelector": "#box_comment_vne > div > div.view_more_coment.width_common.mb10 > a",
     "replyCommentClassName": "comment-reply"
@@ -39,7 +39,7 @@
   "cand.com.vn": {
     "url": "https://cand.com.vn/",
     "listCommentClassName": "uk-comment-list",
-    "listCommentCssSelector": "div.box-cmt > div.box-comment-list",
+    "listCommentCssSelector": "div.box-widget.box-comment > div.box-content.box-comment-list> div.uk-comment-list-bounder > ul.uk-comment-list",
     "commentItemClassName": "item",
     "commentItemTagName": "li",
     "subCommentCssSelector": "div.sub_comment",
@@ -85,6 +85,17 @@
     "viewMoreCssSelector": "#root > div > div > button",
     "viewReplyCssSelector": "ul.pl-\\[\\50px\\] > li > span.hover:underline.my-auto.cursor-pointer"
   },
+  "tuoitre.vn": {
+    "url": "https://tuoitre.vn/",
+    "listCommentClassName": "",
+    "listCommentCssSelector": "#listComment > div.lst-comment > ul",
+    "commentItemClassName": "item-comment",
+    "subCommentItemClassName": "div.top > div.maincmt > span.minimize > span.contentcomment",
+    "subCommentCssSelector": "ul.comment-rep-top > li > div.maincmt > span.minimize > span.contentcomment",
+    "reactionEmotionCssSelector": "div.top > div.maincmt > ul.list-share > li > div > div > div.listreact > div.colreact",
+    "viewMoreCssSelector": "div.ctrbootcomment > button.commentpopupall",
+    "viewReplyCssSelector": "button.btn-cm.viewreply"
+  },
 
-  "created by": "ToanDN"
+  "created by": "VinhHH"
 }

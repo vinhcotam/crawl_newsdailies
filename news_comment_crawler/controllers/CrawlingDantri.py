@@ -22,7 +22,6 @@ class CrawlingDantri(CrawlingNews):
         replyCommentClassName = element["replyCommentClassName"]
         subCommentCssSelector = element["subCommentCssSelector"]
         subCommentItemClassName = element["subCommentItemClassName"]
-        emptyCommentClassName = element["emptyCommentClassName"]
         ##-------------------------------------------------
 
         self.driver.get(url)
@@ -51,10 +50,12 @@ class CrawlingDantri(CrawlingNews):
                 reaction_dict = {}
                 commentText = comment.find_element(By.CLASS_NAME, "comment-text").text
                 reaction = comment.find_element(By.CSS_SELECTOR, reactionCssSelector).text
-                
+                reaction_dict["Thích"] = reaction
                 # save to database
-                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, date_collected = datetime.now())
-                print(commentText)
+                if not NewsComment.checkCommentExist(commentText):
+                    commentData = NewsComment(_id = ObjectId(), content=commentText, reaction=reaction_dict, news_url=url, date_collected=datetime.now())
+                    commentData.save()
+                    object_cmt_id = str(commentData._id)
                 #sub comment
                 # try:
                 #     showSubComment = self.driver.find_element(By.CLASS_NAME, replyCommentClassName)
@@ -71,13 +72,35 @@ class CrawlingDantri(CrawlingNews):
                     showSubComment = self.driver.find_element(By.CLASS_NAME, replyCommentClassName)
                     showSubComment.click()
                     time.sleep(3)
-                    subCommentElements = comment.find_elements(By.CSS_SELECTOR, subCommentCssSelector)
-                    for subCommentElement in subCommentElements:
-                        subCommentText = subCommentElement.find_element(By.CLASS_NAME, "comment-text").text
-                        print(subCommentText)
+                    subReactionDict = {}
+                    # print("test: ", list_comment_element.get_attribute("innerHTML"))
+                    subCommentElement = list_comment_element.find_element(By.CLASS_NAME, "comment-list.child")
+                    # subReactionElement = subCommentElement.find_element(By.CLASS_NAME, reactionCssSelector).text
+                    # subReactionDict["Thích"] = subReactionElement
+                    subComments = subCommentElement.find_element(By.CLASS_NAME, "comment-text").text
+                    print("----")
+                    # print(subCommentElement.get_attribute("innerHTML"))
+                    print("----")
+                    # print(subComments)
+                    subReactionElement = subCommentElement.find_element(By.CLASS_NAME, "like > b").text
+                    print("----")
+                    # print(subReactionElement)
+                    # print(subReactionElement.get_attribute("innerHTML"))
+                    subReactionDict["Thích"] = subReactionElement
+                    # subComments = subCommentElement.find_element(By.CLASS_NAME, "comment-text").text
+                    # print("react", subReactionElement)
+                    # for x in subCommentElement:
+                    #     subCommentText = x.find_element(By.CLASS_NAME, "comment-text").text
+                    #     subReaction = x.find_element(By.CLASS_NAME, "like")
+                    #     print(subCommentText, "----", subReaction)
+                    if object_cmt_id is not None:
+                        if not SubComment.checkSubCommentExist(object_cmt_id, subComments):
+                            subCommentData = SubComment(_id = ObjectId(),comment_id=object_cmt_id, content=subComments, reaction=subReactionDict)
+                            subCommentData.save()
+
                 except:
                     pass
-                commentData.save()
+                # commentData.save()
 
             time.sleep(3)
 

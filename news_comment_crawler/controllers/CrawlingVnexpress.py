@@ -1,5 +1,6 @@
 ﻿
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 from bs4 import BeautifulSoup
 import time
 from bson import ObjectId
@@ -8,6 +9,7 @@ from models.NewsComment import NewsComment
 from models.NewsComment import SubComment
 
 from controllers.CrawlingNews import CrawlingNews
+
 
 class CrawlingVnexpress(CrawlingNews):
 
@@ -37,19 +39,20 @@ class CrawlingVnexpress(CrawlingNews):
         self.driver.implicitly_wait(5) # seconds
         # check isset comment in artical
         try:
-            #list_comment_element = self.driver.find_element(By.CLASS_NAME, listCommentClassName)
             list_comment_element = self.driver.find_element(By.CSS_SELECTOR, listCommentCssSelector)
-            if list_comment_element.is_displayed() == False:
+            if not list_comment_element.is_displayed():
                 print("This article has no comment!")
                 return
+        except NoSuchElementException:
+            print("This article has no comment!")
+            return
+        try:
             showMoreComment = self.driver.find_element(By.CSS_SELECTOR, viewMoreCssSelector)
-            # check show more comment btn
             while showMoreComment.is_displayed():
                 showMoreComment.click()
-                self.driver.implicitly_wait(5) # second
-        except:
+                self.driver.implicitly_wait(5) 
+        except NoSuchElementException:
             pass
-
         comments = list_comment_element.find_elements(By.CLASS_NAME, commentItemClassName)
         # print(len(comments))
         #loop in comments get content (text, react) of each comment
@@ -74,15 +77,15 @@ class CrawlingVnexpress(CrawlingNews):
                 commentData = NewsComment(_id = ObjectId(), content=self.getContent(comment), reaction=reaction_dict, news_url=url, date_collected=datetime.now())
                 commentData.save()
                 object_cmt_id = str(commentData._id)
-            else:
-                print("not save")
+            # else:
+            #     print("not save")
             # get object id
             try:
                 sub_reaction_dict = {}
                 showSubComment = comment.find_element(By.CLASS_NAME, replyCommentClassName)
                 showSubComment.click()
                 self.driver.implicitly_wait(3) # seconds
-
+                # print("test1: ", comment.get_attribute("innerHTML"))
                 subCommentElement = comment.find_element(By.CSS_SELECTOR, subCommentCssSelector)
                 subComments = subCommentElement.find_elements(By.CLASS_NAME, subCommentItemClassName)
                 # loop in comments get content (text, react) of each subcomment
@@ -106,8 +109,8 @@ class CrawlingVnexpress(CrawlingNews):
                                 subCommentData.save()
                                 print("check check")
                                 print(self.getContent(subComment))
-                        else:
-                            print("not save")
+                        # else:
+                        #     print("not save")
 
                         # reaction_dict[emotions] = quantity
                     # save to database

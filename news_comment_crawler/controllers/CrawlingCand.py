@@ -6,7 +6,8 @@ from bson import ObjectId
 from datetime import datetime
 from models.NewsComment import NewsComment
 from models.NewsComment import SubComment
-
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from controllers.CrawlingNews import CrawlingNews
 
 class CrawlingCand(CrawlingNews):
@@ -16,6 +17,7 @@ class CrawlingCand(CrawlingNews):
         # get info selector in file config json
         ##-------------------------------------------------
         listCommentCssSelector = element["listCommentCssSelector"]
+        listCommentClassName = element["listCommentClassName"]
         commentItemTagName = element["commentItemTagName"]
         reactionClassName = element["reactionClassName"]
         viewMoreCssSelector = element["viewMoreCssSelector"]
@@ -25,17 +27,23 @@ class CrawlingCand(CrawlingNews):
         ##-------------------------------------------------
 
         self.driver.get(url)
-        self.driver.implicitly_wait(5) # seconds
-
+        # self.driver.implicitly_wait(10 ) # seconds
+        wait = WebDriverWait(self.driver, 50)
         try:
-            list_comment_element = self.driver.find_element(By.CSS_SELECTOR, listCommentCssSelector)
-
+            list_comment_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "box-cmt")))
+            test = list_comment_element.find_element(By.CLASS_NAME, "box-content")
+            html_content = test.get_attribute("innerHTML")
+            print(list_comment_element.get_attribute("innerHTML"))
+            print("----")
+            print(html_content)
+        except Exception as e:
+            print(f"An error occurred: {e}")
         except :
             print("This article has no comment")
             return
 
         if list_comment_element.is_displayed == False:
-            print("This article has no comment")
+            print("This article has no comment1")
             return
         else:
             liTags = list_comment_element.find_elements(By.TAG_NAME, commentItemTagName)
