@@ -17,7 +17,7 @@ class SubComment(Document):
     @staticmethod
     def checkSubCommentExist(comment_id, content):
         client = MongoClient('mongodb://localhost:27017/')
-        db = client['news_comment_crawler']
+        db = client['tobaco-crawler-webadmin-dev']
         comments_collection = db['news_sub_comment']
         existing_comment = comments_collection.find_one({"comment_id": comment_id, "content": content})
         if existing_comment:
@@ -40,7 +40,7 @@ class NewsComment(Document):
     @staticmethod
     def checkCommentExist(content):
         client = MongoClient('mongodb://localhost:27017/')
-        db = client['news_comment_crawler']
+        db = client['tobaco-crawler-webadmin-dev']
         comments_collection = db['news_comment']
         existing_comment = comments_collection.find_one({"content": content})
         if existing_comment:

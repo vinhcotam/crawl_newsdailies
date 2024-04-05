@@ -5,8 +5,25 @@ from bson import ObjectId
 
 class NewsUrl(Document):
     _id = ObjectIdField()
-    name_url = StringField()
-    meta = {'collection': 'news_url'}
+    website = ObjectIdField()
+    topic = ObjectIdField()
+    keyword = ObjectIdField()
+    crawlerconfig = ObjectIdField()
+    news_group = ObjectIdField()
+    group_news = IntField()
+    name = StringField()
+    news_url = StringField()
+    news_title = StringField()
+    news_summary = StringField()
+    npl_authors = ListField()
+    npl_date = DateField()
+    npl_content = MultiLineStringField()
+    npl_keywords = ListField()
+    npl_summary = StringField()
+    created = DateField()
+    collected = DateField()
+    posted = DateField()
+    meta = {'collection': 'newsdailies'}
     @classmethod
     def post_save(cls, sender, document, **kwargs):
         print(document._id)
@@ -17,19 +34,19 @@ class NewsUrl(Document):
         return urls
 
     '''Test'''
-    def insertUrl(self, listUrl):
-        # tạo array list các bài báo
-        #listUrl = ['https://dantri.com.vn/kinh-doanh/pho-thong-doc-se-khong-ha-chuan-tin-dung-20230621114057709.htm']
+    # def insertUrl(self, listUrl):
+    #     # tạo array list các bài báo
+    #     #listUrl = ['https://dantri.com.vn/kinh-doanh/pho-thong-doc-se-khong-ha-chuan-tin-dung-20230621114057709.htm']
 
-        lenListUrl = len(listUrl)
-        print(lenListUrl)
-        for i in range(lenListUrl):
+    #     lenListUrl = len(listUrl)
+    #     print(lenListUrl)
+    #     for i in range(lenListUrl):
 
-            '''insert url to database'''
+    #         '''insert url to database'''
 
-            newsUrlModel = NewsUrl(_id = ObjectId() , name_url = listUrl[i])
-            newsUrlModel.save()
-            print(newsUrlModel.to_json())
+    #         newsUrlModel = NewsUrl(_id = ObjectId() , name_url = listUrl[i])
+    #         newsUrlModel.save()
+    #         print(newsUrlModel.to_json())
 
 
 #insert url to database for testing

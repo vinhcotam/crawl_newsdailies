@@ -9,6 +9,7 @@ from models.NewsComment import SubComment
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from controllers.CrawlingNews import CrawlingNews
+from selenium.webdriver.common.action_chains import ActionChains
 
 class CrawlingCand(CrawlingNews):
 
@@ -28,9 +29,11 @@ class CrawlingCand(CrawlingNews):
 
         self.driver.get(url)
         # self.driver.implicitly_wait(10 ) # seconds
-        wait = WebDriverWait(self.driver, 50)
+        wait = WebDriverWait(self.driver, 5)
         try:
             list_comment_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "box-cmt")))
+            # actions = ActionChains(self.driver)
+            # actions.move_to_element(list_comment_element).perform()
             test = list_comment_element.find_element(By.CLASS_NAME, "box-content")
             html_content = test.get_attribute("innerHTML")
             print(list_comment_element.get_attribute("innerHTML"))

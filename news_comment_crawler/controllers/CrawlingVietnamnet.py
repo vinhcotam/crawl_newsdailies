@@ -51,9 +51,10 @@ class CrawlingVietnamnet(CrawlingNews):
             print("This article has no comment")
             return   
         comments = list_comment_element.find_elements(By.CSS_SELECTOR, commentItemClassName)
-
+        
         for comment in comments:
             '''Lấy comments'''
+            print(comment.get_attribute("innerHTML"))
             commentText = comment.find_element(By.TAG_NAME, "p").text
             reaction_dict = {}
             '''Lấy reaction của comment'''
@@ -65,11 +66,11 @@ class CrawlingVietnamnet(CrawlingNews):
                 reaction = "0"
         
             print("--" + commentText + reaction)
-            
-            commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, date_collected = datetime.now())
-            '''Hiển thị comments phụ'''
-            commentData.save()
-            object_cmt_id = str(commentData._id)
+            if not NewsComment.checkCommentExist(commentText):
+                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, date_collected = datetime.now())
+                '''Hiển thị comments phụ'''
+                commentData.save()
+                object_cmt_id = str(commentData._id)
             try:
                 print("--------")
                 viewReply = self.driver.find_element(By.CSS_SELECTOR, viewReplyCssSelector)

@@ -49,8 +49,8 @@ class CrawlingVnexpress(CrawlingNews):
         try:
             showMoreComment = self.driver.find_element(By.CSS_SELECTOR, viewMoreCssSelector)
             while showMoreComment.is_displayed():
-                showMoreComment.click()
-                self.driver.implicitly_wait(5) 
+                self.driver.execute_script("arguments[0].click();", showMoreComment)
+                self.driver.implicitly_wait(5)
         except NoSuchElementException:
             pass
         comments = list_comment_element.find_elements(By.CLASS_NAME, commentItemClassName)

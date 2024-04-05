@@ -48,8 +48,11 @@ class CrawlingThanhnien(CrawlingNews):
             commentText = comment.find_element(By.CLASS_NAME, 'text-comment').text
             reaction = comment.find_element(By.CLASS_NAME, 'total-like').text
             print(commentText + '---' + reaction)
-            commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, date_collected = datetime.now())
-            commentData.save()
+            reaction_dict["Thích"] = reaction
+            if not NewsComment.checkCommentExist(commentText):
+                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, date_collected = datetime.now())
+                commentData.save()
+                object_cmt_id = str(commentData._id)
             # print(commentData.to_json())
         time.sleep(5)
 
