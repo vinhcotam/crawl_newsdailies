@@ -20,7 +20,7 @@ class CrawlingVnexpress(CrawlingNews):
             return True
         return False
 
-    def crawlingComment(self, url, element):
+    def crawlingComment(self, url, element, news_obj):
         print("=============VNEXPRESS=========")
 
         # get info selector in file config json
@@ -74,7 +74,7 @@ class CrawlingVnexpress(CrawlingNews):
                 # save to database
             # print(str(i) + self.getContent(comment) + reaction)
             if not NewsComment.checkCommentExist(self.getContent(comment)):
-                commentData = NewsComment(_id = ObjectId(), content=self.getContent(comment), reaction=reaction_dict, news_url=url, date_collected=datetime.now())
+                commentData = NewsComment(_id = ObjectId(), content=self.getContent(comment), reaction=reaction_dict, news_url=url, news_id = news_obj, date_collected=datetime.now())
                 commentData.save()
                 object_cmt_id = str(commentData._id)
             # else:

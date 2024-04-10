@@ -36,10 +36,11 @@ for document in urls:
         if isinstance(value, dict):
             if key == domain:
                 url = document["news_url"]
+                news_obj = document["_id"]
                 print(url)
                 factory = CommentFactory()
                 article = factory.createCrawlingComment(domain, driver)
-                article.crawlingComment(url, value)
+                article.crawlingComment(url, value, news_obj)
 
 
 

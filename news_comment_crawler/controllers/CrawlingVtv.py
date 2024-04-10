@@ -11,7 +11,7 @@ from controllers.CrawlingNews import CrawlingNews
 
 class CrawlingVtv(CrawlingNews):
 
-    def crawlingComment(self, url, element):
+    def crawlingComment(self, url, element, news_obj):
         print("=============VTV=========")
         # get info selector in file config json
         ##-------------------------------------------------

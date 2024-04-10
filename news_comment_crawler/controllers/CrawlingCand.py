@@ -13,7 +13,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 class CrawlingCand(CrawlingNews):
 
-    def crawlingComment(self, url, element):
+    def crawlingComment(self, url, element, news_obj):
         print("=============CAND=========")
         # get info selector in file config json
         ##-------------------------------------------------
@@ -30,10 +30,13 @@ class CrawlingCand(CrawlingNews):
         self.driver.get(url)
         # self.driver.implicitly_wait(10 ) # seconds
         wait = WebDriverWait(self.driver, 5)
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        list_comment_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "box-cmt")))
+
         try:
             list_comment_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "box-cmt")))
-            # actions = ActionChains(self.driver)
-            # actions.move_to_element(list_comment_element).perform()
+            # self.driver.execute_script("arguments[0].scrollIntoView();", list_comment_element)
+            
             test = list_comment_element.find_element(By.CLASS_NAME, "box-content")
             html_content = test.get_attribute("innerHTML")
             print(list_comment_element.get_attribute("innerHTML"))
@@ -56,7 +59,7 @@ class CrawlingCand(CrawlingNews):
                 reaction = liTag.find_element(By.CLASS_NAME, reactionClassName).get_attribute('data-like')
                 print(commentText + '---' + reaction)
                 # save to database
-                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, date_collected = datetime.now())
+                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, news_id = news_obj, date_collected = datetime.now())
 
                 commentData.save()
                 # print(commentData.to_json())

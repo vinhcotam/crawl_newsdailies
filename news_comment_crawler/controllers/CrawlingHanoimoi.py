@@ -11,7 +11,7 @@ from controllers.CrawlingNews import CrawlingNews
 
 class CrawlingHanoimoi(CrawlingNews):
 
-    def crawlingComment(self, url, element):
+    def crawlingComment(self, url, element, news_obj):
         print("=============Hanoimoi=========")
         # get info selector in file config json
         ##-------------------------------------------------
@@ -46,7 +46,7 @@ class CrawlingHanoimoi(CrawlingNews):
                 reaction = comment.find_element(By.CLASS_NAME, 'total-like').text
                 print(commentText + '---' + reaction)
                 if not NewsComment.checkCommentExist(commentText):
-                    commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, date_collected = datetime.now())
+                    commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, news_id = news_obj, date_collected = datetime.now())
                     commentData.save()
                     object_cmt_id = str(commentData._id)
 

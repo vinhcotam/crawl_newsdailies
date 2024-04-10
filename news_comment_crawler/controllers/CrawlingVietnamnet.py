@@ -11,7 +11,7 @@ from controllers.CrawlingNews import CrawlingNews
 
 class CrawlingVietnamnet(CrawlingNews):
 
-    def crawlingComment(self, url, element):
+    def crawlingComment(self, url, element, news_obj):
         print("=============Vietnamnet=========")
         # get info selector in file config json
         ##-------------------------------------------------
@@ -55,7 +55,7 @@ class CrawlingVietnamnet(CrawlingNews):
         for comment in comments:
             '''Lấy comments'''
             print(comment.get_attribute("innerHTML"))
-            commentText = comment.find_element(By.TAG_NAME, "p").text
+            commentText = comment.find_element(By.CLASS_NAME, "LinesEllipsis").text
             reaction_dict = {}
             '''Lấy reaction của comment'''
             try:
@@ -67,7 +67,7 @@ class CrawlingVietnamnet(CrawlingNews):
         
             print("--" + commentText + reaction)
             if not NewsComment.checkCommentExist(commentText):
-                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, date_collected = datetime.now())
+                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, news_id = news_obj, date_collected = datetime.now())
                 '''Hiển thị comments phụ'''
                 commentData.save()
                 object_cmt_id = str(commentData._id)
