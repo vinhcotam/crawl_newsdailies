@@ -4,12 +4,40 @@ from selenium.common.exceptions import NoSuchElementException
 from bs4 import BeautifulSoup
 import time
 from bson import ObjectId
-from datetime import datetime
+from datetime import datetime, timedelta
 from models.NewsComment import NewsComment
 from models.NewsComment import SubComment
-
+import re
 from controllers.CrawlingNews import CrawlingNews
 
+def parse_comment_date(commentDateValue):
+    # Only format to parse is dd/mm/yyyy
+    formats = ["%d/%m/%Y"]
+    date_comment = None
+
+    hours_match = re.search(r"(\d+)\s*h\s*trước", commentDateValue)
+    days_match = re.search(r"(\d+)\s*ngày\s*trước", commentDateValue)
+
+    if hours_match:
+        hours_ago = int(hours_match.group(1))
+        date_comment = datetime.now() - timedelta(hours=hours_ago)
+    elif days_match:
+        days_ago = int(days_match.group(1))
+        date_comment = datetime.now() - timedelta(days=days_ago)
+    else:
+        # Remove time part if it exists
+        commentDateValue = re.sub(r'\d{1,2}:\d{2}\s*', '', commentDateValue)
+        for fmt in formats:
+            try:
+                date_comment = datetime.strptime(commentDateValue.strip(), fmt)
+                break
+            except ValueError:
+                continue
+    
+    if date_comment is None:
+        raise ValueError(f"Date format for '{commentDateValue}' is not recognized")
+    
+    return date_comment
 
 class CrawlingVnexpress(CrawlingNews):
 
@@ -39,31 +67,39 @@ class CrawlingVnexpress(CrawlingNews):
         self.driver.implicitly_wait(5) # seconds
         # check isset comment in artical
         try:
+            showMoreComment = self.driver.find_element(By.CSS_SELECTOR, viewMoreCssSelector)
+            showMoreComment.click()
             list_comment_element = self.driver.find_element(By.CSS_SELECTOR, listCommentCssSelector)
-            if not list_comment_element.is_displayed():
-                print("This article has no comment!")
-                return
         except NoSuchElementException:
             print("This article has no comment!")
             return
-        try:
-            showMoreComment = self.driver.find_element(By.CSS_SELECTOR, viewMoreCssSelector)
-            while showMoreComment.is_displayed():
-                self.driver.execute_script("arguments[0].click();", showMoreComment)
-                self.driver.implicitly_wait(5)
-        except NoSuchElementException:
-            pass
+        # try:
+        #     showMoreComment = self.driver.find_element(By.CSS_SELECTOR, viewMoreCssSelector)
+        #     while showMoreComment.is_displayed():
+        #         self.driver.execute_script("arguments[0].click();", showMoreComment)
+        #         self.driver.implicitly_wait(5)
+        # except NoSuchElementException:
+        #     pass
         comments = list_comment_element.find_elements(By.CLASS_NAME, commentItemClassName)
-        # print(len(comments))
+        commentsDate = list_comment_element.find_elements(By.CSS_SELECTOR, ".time-com")
+
+        # print(len(comments)) time-com
         #loop in comments get content (text, react) of each comment
         i = 0
-        for comment in comments:
+        for commentDate, comment in zip(commentsDate, comments):
             i = i + 1
             reaction_dict = {}
             reaction = comment.find_element(By.CSS_SELECTOR, reactionCssSelector).text
             reactionDetail = ".reactions-detail"
             reaction_items = comment.find_elements(By.CSS_SELECTOR, reactionDetail)
-
+            commentDateValue = commentDate.get_attribute("innerHTML")
+            date_comment = datetime.now()
+            try:
+                date_comment = parse_comment_date(commentDateValue)
+                print(f"Parsed date: {date_comment}")
+            except ValueError as e:
+                print(e)
+            print(f"Date: {date_comment}")
             for reaction_detail in reaction_items:
                 img_elements = reaction_detail.find_elements(By.TAG_NAME, "img")
                 strong_elements = reaction_detail.find_elements(By.TAG_NAME, "strong")
@@ -72,10 +108,12 @@ class CrawlingVnexpress(CrawlingNews):
                     quantity = strong.get_attribute("innerHTML")
                     reaction_dict[emotions] = quantity
                 # save to database
-            # print(str(i) + self.getContent(comment) + reaction)
+            print(str(i) + self.getContent(comment) + reaction)
             if not NewsComment.checkCommentExist(self.getContent(comment)):
-                commentData = NewsComment(_id = ObjectId(), content=self.getContent(comment), reaction=reaction_dict, news_url=url, news_id = news_obj, date_collected=datetime.now())
+                commentData = NewsComment(_id = ObjectId(), content=self.getContent(comment), reaction=reaction_dict, news_url=url, news_id = news_obj, date_collected=datetime.now(), date_comment = date_comment)
+                print((commentData))
                 commentData.save()
+                
                 object_cmt_id = str(commentData._id)
             # else:
             #     print("not save")
@@ -132,3 +170,4 @@ class CrawlingVnexpress(CrawlingNews):
                 span.decompose()
             p_text_without_span = soup.get_text()
         return p_text_without_span
+    

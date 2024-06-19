@@ -51,12 +51,15 @@ class CrawlingVietnamnet(CrawlingNews):
             print("This article has no comment")
             return   
         comments = list_comment_element.find_elements(By.CSS_SELECTOR, commentItemClassName)
-        
-        for comment in comments:
+        # commentsDate content__wrapper
+        commentsDate = list_comment_element.find_elements(By.CSS_SELECTOR, "span.text-\\[\\#999\\].text-\\[13px\\].pl-\\[10px\\]")
+        for commentDate, comment in zip(commentsDate, comments):
             '''Lấy comments'''
-            print(comment.get_attribute("innerHTML"))
             commentText = comment.find_element(By.CLASS_NAME, "LinesEllipsis").text
+            commentDateValue = commentDate.get_attribute("innerHTML")
             reaction_dict = {}
+            print("mmm", commentDateValue)
+
             '''Lấy reaction của comment'''
             try:
                 
@@ -65,10 +68,11 @@ class CrawlingVietnamnet(CrawlingNews):
             except:
                 reaction = "0"
         
-            print("--" + commentText + reaction)
+            print("--`" + commentText + reaction)
             if not NewsComment.checkCommentExist(commentText):
-                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, news_id = news_obj, date_collected = datetime.now())
+                commentData = NewsComment(_id = ObjectId(), content = commentText, reaction = reaction_dict, news_url = url, news_id = news_obj, date_collected = datetime.now(), date_comment = commentDateValue)
                 '''Hiển thị comments phụ'''
+                print("mmm", commentData)
                 commentData.save()
                 object_cmt_id = str(commentData._id)
             try:

@@ -1,16 +1,18 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import time
 from bson import ObjectId
 from datetime import datetime
 from models.NewsComment import NewsComment
 from models.NewsComment import SubComment
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
 from controllers.CrawlingNews import CrawlingNews
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
+import re
 
-from selenium.webdriver.support import expected_conditions as EC
 class CrawlingTuoiTre(CrawlingNews):
 
     def crawlingComment(self, url, element, news_obj):
@@ -27,58 +29,72 @@ class CrawlingTuoiTre(CrawlingNews):
         viewReplyCssSelector = element["viewReplyCssSelector"]
         # reactionEmotionCssSelector = element["reactionEmotionCssSelector"]
         ##-------------------------------------------------
+        commentDateClassName = element["commentDateClassName"]
 
         self.driver.get(url)
-        self.driver.implicitly_wait(10) # seconds
+        self.driver.implicitly_wait(10)  # seconds
+
         try:
-            
             comment_element = self.driver.find_element(By.CLASS_NAME, "ico.comment")
             comment_element.click()
-
             self.driver.implicitly_wait(5)
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            list_comment_element = self.driver.find_element(By.CSS_SELECTOR, "div.lstcommentpopup > ul")
-        
-        # # check empty
-        # try:
-        #     list_comment_element = self.driver.find_element(By.CSS_SELECTOR, "div.lstcommentpopup > ul")
-            
-        except :
+        except NoSuchElementException:
             print("This article has no comment")
             return
 
-        i = 0
+        # Locate the popup element
+        popup_element = self.driver.find_element(By.CSS_SELECTOR, "div.lstcommentpopup")
 
-        comments = list_comment_element.find_elements(By.CSS_SELECTOR, ".item-comment") #list <web-element>
+        # Scroll within the popup until no more new comments are loaded
+        while True:
+            previous_height = self.driver.execute_script("return arguments[0].scrollHeight", popup_element)
+            self.driver.execute_script("arguments[0].scrollTo(0, arguments[0].scrollHeight);", popup_element)
+            time.sleep(2)  # Wait for new comments to load
+            new_height = self.driver.execute_script("return arguments[0].scrollHeight", popup_element)
+            if new_height == previous_height:
+                break
 
-        for comment in comments:
-            i = i + 1
+        list_comment_element = popup_element.find_element(By.CSS_SELECTOR, "ul")
+        commentsDate = list_comment_element.find_elements(By.CSS_SELECTOR, ".timeago")
+        comments = list_comment_element.find_elements(By.CSS_SELECTOR, ".item-comment")
+
+        for commentDate, comment in zip(commentsDate, comments):
             commentText = comment.find_element(By.CLASS_NAME, "contentcomment").text.strip()
+            commentDateValue = commentDate.get_attribute("title")
+            commentDateValue = re.search(r"\d{4}-\d{2}-\d{2}", commentDateValue).group()
+
             try:
                 remainElement = comment.find_element(By.CLASS_NAME, "remain")
                 textContent = remainElement.get_attribute("innerHTML").strip()
-                commentText += textContent 
-                print("z-z")
+                commentText += textContent
             except NoSuchElementException:
                 pass
-            
-            if(commentText!=""):
+
+            if commentText:
                 print(commentText.strip())
-                print(process_emotions(comment))
                 reaction_dict = process_emotions(comment)
+                print(reaction_dict)
+                # Save the comment to the database if needed
                 if not NewsComment.checkCommentExist(commentText):
-                    print("Aaaaaa", news_obj)
-                    commentData = NewsComment(_id = ObjectId(), content=commentText, reaction=reaction_dict, news_url=url, news_id = news_obj, date_collected=datetime.now())
+                    commentData = NewsComment(
+                        _id=ObjectId(),
+                        content=commentText,
+                        reaction=reaction_dict,
+                        news_url=url,
+                        news_id=news_obj,
+                        date_collected=datetime.now(),
+                        date_comment=commentDateValue
+                    )
                     commentData.save()
-                    print("done")
+                    print("Comment saved")
                     object_cmt_id = str(commentData._id)
-                try:
-                    showSubComment = comment.find_element(By.CSS_SELECTOR, viewReplyCssSelector)
-                    showSubComment.click()
-                    print("yeah")
-                    self.driver.implicitly_wait(3)
-                except:
-                    pass
+
+                # try:
+                #     showSubComment = comment.find_element(By.CSS_SELECTOR, viewReplyCssSelector)
+                #     showSubComment.click()
+                #     self.driver.implicitly_wait(3)
+                # except NoSuchElementException:
+                #     pass
         time.sleep(5)
 
 def process_emotions(comment):
@@ -89,7 +105,7 @@ def process_emotions(comment):
         "spritecmt icosurprisedreact": "Ngạc nhiên",
         "spritecmt icosadreact": "Buồn",
         "spritecmt icoanggyreact": "Phẫn nộ"
-        }
+    }
     reaction_dict = {}
     emotion_text = comment.find_elements(By.CLASS_NAME, "colreact")
     for emotion_element in emotion_text:

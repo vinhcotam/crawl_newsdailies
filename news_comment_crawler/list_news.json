@@ -10,7 +10,7 @@
     "reactionCssSelector": ".reactions-total a",
     "reactionClassName": "reactions-total",
     "reactionDetail": "reactions-detail > div.item", 
-    "viewMoreCssSelector": "#box_comment_vne > div > div.view_more_coment.width_common.mb10 > a",
+    "viewMoreCssSelector": "#show_more_coment",
     "replyCommentClassName": "view_all_reply"
   },
   "dantri.com.vn": {
@@ -26,7 +26,7 @@
   },
   "thanhnien.vn": {
     "url": "https://thanhnien.vn/",
-    "listCommentClassName": "main_show_comment",
+    "listCommentClassName": "list-comment.content_cm",
     "listCommentCssSelector": "#detail_comment > div > div.cmbl > div.list-comment.content_cm",
     "commentItemClassName": "item",
     "subCommentCssSelector": "div.sub_comment",
@@ -90,6 +90,7 @@
     "listCommentClassName": "",
     "listCommentCssSelector": "#listComment > div.lst-comment > ul",
     "commentItemClassName": "item-comment",
+    "commentDateClassName": "div.top > div.maincmt > ul.list-share > li > span.timeago",
     "subCommentItemClassName": "div.top > div.maincmt > span.minimize > span.contentcomment",
     "subCommentCssSelector": "ul.comment-rep-top > li > div.maincmt > span.minimize > span.contentcomment",
     "reactionEmotionCssSelector": "div.top > div.maincmt > ul.list-share > li > div > div > div.listreact > div.colreact",

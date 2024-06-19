@@ -26,13 +26,14 @@ class CrawlingCand(CrawlingNews):
         subCommentCssSelector = element["subCommentCssSelector"]
         subCommentItemClassName = element["subCommentItemClassName"]
         ##-------------------------------------------------
-
-        self.driver.get(url)
+        try:
+            self.driver.get(url)
         # self.driver.implicitly_wait(10 ) # seconds
-        wait = WebDriverWait(self.driver, 5)
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        list_comment_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "box-cmt")))
-
+            wait = WebDriverWait(self.driver, 5)
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            list_comment_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "box-cmt")))
+        except: 
+            return
         try:
             list_comment_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "box-cmt")))
             # self.driver.execute_script("arguments[0].scrollIntoView();", list_comment_element)

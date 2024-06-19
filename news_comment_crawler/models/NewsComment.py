@@ -9,7 +9,8 @@ class SubComment(Document):
     _id = ObjectIdField()
     comment_id = StringField()
     content = StringField()
-    reaction = DictField()
+    reaction = DictField(),
+    date_comment = StringField()
     meta = {'collection': 'news_sub_comment'}
     @classmethod
     def post_save(cls, sender, document, **kwargs):
@@ -32,6 +33,7 @@ class NewsComment(Document):
     news_url = StringField()
     news_id = ObjectIdField()
     date_collected = DateTimeField()
+    date_comment = DateTimeField()
 
     meta = {'collection': 'comments'}
 
