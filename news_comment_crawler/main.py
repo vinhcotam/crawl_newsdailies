@@ -5,7 +5,8 @@ from configs.FileJsonConfig import FileJsonConfig
 from controllers.CommentFactory import CommentFactory
 
 # Connect to the database
-connect(db='tobaco-crawler-webadmin-dev', host='localhost', port=27017)
+# connect(db='tobaco-crawler-webadmin-dev', host='localhost', port=27017)
+connect(db='news_comment_crawler', host='localhost', port=27017)
 
 # Configure Firefox options
 options = webdriver.FirefoxOptions()
