@@ -4,37 +4,26 @@ from datetime import datetime
 from bson import ObjectId
 
 class NewsUrl(Document):
-    # _id = ObjectIdField()
-    # website = ObjectIdField()
-    # topic = ObjectIdField()
-    # keyword = ObjectIdField()
-    # crawlerconfig = ObjectIdField()
-    # news_group = ObjectIdField()
-    # group_news = IntField()
-    # name = StringField()
-    # news_url = StringField()
-    # news_title = StringField()
-    # news_summary = StringField()
-    # npl_authors = ListField()
-    # npl_date = DateField()
-    # npl_content = MultiLineStringField()
-    # npl_keywords = ListField()
-    # npl_summary = StringField()
-    # created = DateField()
-    # collected = DateField()
-    # posted = DateField()
-    # meta = {'collection': 'newsdailies'}
-    # @classmethod
-    # def post_save(cls, sender, document, **kwargs):
-    #     print(document._id)
-
-    # '''Get News's URL from Database'''
-    # def getUrl(self):
-    #     urls = NewsUrl.objects()
-    #     return urls
     _id = ObjectIdField()
+    website = ObjectIdField()
+    topic = ObjectIdField()
+    keyword = ObjectIdField()
+    crawlerconfig = ObjectIdField()
+    news_group = ObjectIdField()
+    group_news = IntField()
+    name = StringField()
     news_url = StringField()
-    meta = {'collection': 'news_url'}
+    news_title = StringField()
+    news_summary = StringField()
+    npl_authors = ListField()
+    npl_date = DateField()
+    npl_content = MultiLineStringField()
+    npl_keywords = ListField()
+    npl_summary = StringField()
+    created = DateField()
+    collected = DateField()
+    posted = DateField()
+    meta = {'collection': 'newsdailies'}
     @classmethod
     def post_save(cls, sender, document, **kwargs):
         print(document._id)
@@ -43,6 +32,7 @@ class NewsUrl(Document):
     def getUrl(self):
         urls = NewsUrl.objects()
         return urls
+
     '''Test'''
     # def insertUrl(self, listUrl):
     #     # tạo array list các bài báo
